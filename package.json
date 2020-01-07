@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "cross-env NODE_PATH=src nodemon --watch src/ index.js"
+    "dev": "cross-env NODE_PATH=src supervisor --watch src/ index.js"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "supervisor": "^0.12.0"
   }
 }
