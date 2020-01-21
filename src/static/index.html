@@ -5,27 +5,87 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>테트리스</title>
-  <link rel="stylesheet" type="text/css" href="./styles.css" />
+  <link rel="stylesheet" type="text/css" href="./styles/base.css" />
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
 </head>
 
 <body>
-  <div class="grid">
-    <canvas id="board" class="game-board"></canvas>
-    <div class="right-column">
-      <div>
-        <h1>TETRIS</h1>
-        <p>Score : <span id="score">0</span></p>
-        <p>Lines : <span id="lines">0</span></p>
-        <p>Level : <span id="level">0</span></p>
-        <canvas id="next" class="next"></canvas>
-      </div>
+  <!-- 메인 텍스트  -->
+  <div id="game-over-page" class="page hide align_center-center">
+    <div id="main-text">GAME OVER</div>
+  </div>
 
-      <button onclick="play()" class="play-button">Play</button>
+  <!-- page : 로그인  -->
+  <div id="login-page" class="page hide align_center-center ">
+    <form>
+      <div class="input-container padding-bottom-4">
+        <input type="text" name="name" class="input-name" maxlength="9" />
+      </div>
+      <div class="button-container">
+        <button>LOGIN</button>
+      </div>
+    </form>
+  </div>
+
+
+  <!-- page : progress  -->
+  <div id="progress-page" class="page align_center-center hide">
+    <div>
+      <span class="current-users">0</span> / <span class="max-users">0</span>
     </div>
   </div>
 
+
+  <!-- page : play  -->
+  <div id="play-page" class="page hide">
+
+    <!-- 적측 진영 -->
+    <div id="enemies-container"></div>
+
+    <!-- 테트리스 플레이 -->
+    <div id="my-info-container" class=" grid">
+      <canvas id="board" class="game-board"></canvas>
+      <div class="right-column">
+        <div>
+          <!-- <h1>TETRIS</h1> -->
+          <canvas id="next" class="next"></canvas>
+          <p>Name  : <span id="myName"></span></p>
+          <!-- <p>Score : <span id="score">0</span></p>
+          <p>Lines : <span id="lines">0</span></p> -->
+          <p>Level : <span id="level">0</span></p>
+          <p>
+            <div id="my-bad-piece-guage-container">
+              <div class="my-bad-piece-guage"></div>
+            </div>
+          </p>
+        </div>
+
+        <!-- <button onclick="play()" class="play-button">Play</button> -->
+      </div>
+    </div>
+
+    <!-- 우리 진영 -->
+    <div id="my-teams-container"></div>
+  </div>
+
+
+  <!-- 디버그 패널  -->
+  <div id="debug-pannel">
+    <!-- <button class="initialize">초기화</button> <br />
+    <button class="setDummy">setDummy</button> <br />
+    <button class="create-bad-piece">방해블럭</button> <br />
+    <button class="attack">공격</button> <br />
+    <button class="gameOver">game over</button> <br /> -->
+  </div>
+
   <!-- 스크립트 로드 -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
+  <script src="https://unpkg.com/fxjs/dist/fx.min.js" ></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/utils/socket_utils.js"></script>
+  <script src="./js/utils/tetris_utils.js"></script>
+
   <script src="./constants.js"></script>
   <script src="./board.js"></script>
   <script src="./piece.js"></script>

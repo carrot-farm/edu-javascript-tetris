@@ -1,0 +1,190 @@
+/* ===== common ===== */
+* {
+  font-family: 'Press Start 2P', cursive;
+}
+.align_center-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.padding-bottom-1 { padding-bottom: 5px; }
+.padding-bottom-2 { padding-bottom: 10px; }
+.padding-bottom-3 { padding-bottom: 15px; }
+.padding-bottom-4 { padding-bottom: 20px; }
+
+
+/* ===== button ===== */
+button {
+  background-color: #4caf50;
+  font-size: 16px;
+  padding: 15px 30px;
+  cursor: pointer;
+}
+.play-button {
+  background-color: #dd3030;
+}
+
+
+/* ===== page ===== */
+.page {
+  position: fixed;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  transform: translateY(0);
+  transition: transform 0.6s;
+  z-index: 1;
+}
+.page.hide {
+  transform: translateY(100%);
+  transition: none;
+  z-index: 0;
+}
+
+/* ===== login page ===== */
+#login-page {
+  text-align: center;
+}
+#login-page input ,
+#login-page button {
+  width: 300px;
+}
+#login-page input {
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #999;
+  line-height: 3rem;
+  font-size: 2rem;
+}
+
+/* ===== progress page ===== */
+#progress-page {
+  font-size: 3rem;
+}
+
+
+
+/* ===== play page ===== */
+#play-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 유저 정보 공통 */
+.user-info-container {
+  position: relative;
+  width: 100px;
+  padding: 10px;
+}
+.user-info-container .name{
+  text-align: center;
+  font-size: 1.2rem;
+  height: 1.7rem;
+}
+.user-info-container .bad-piece-guage-container{
+  position: relative;
+  border: 3px solid;
+  width: 100%;
+}
+.user-info-container .bad-piece-guage-container .bad-piece-guage {
+  height: 10px;
+  transition: all .2s linear;
+  transform: scaleX(0);
+  transform-origin: top left;
+  background-color: #5672ff;
+}
+.user-info-container .bad-piece-guage-container .bad-piece-guage.red {
+  background-color: red;
+}
+.user-info-container .game-over-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+  .user-info-container .game-over-container.hide{
+    display: none;
+  }
+.user-info-container .game-over-container .bg{
+  position: absolute;
+  left:0;
+  top:0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  opacity: 0.7;
+}
+.user-info-container .game-over-container .text{
+  display: inline-block;
+  font-size: 1rem;
+  padding: 5px;
+  color: red;
+  z-index: 1;
+}
+#enemies-container,
+#my-teams-container {
+  min-width: 800px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+/* 플레이 패널 */
+.grid {
+  display: grid;
+  grid-template-columns: 320px 200px;
+}
+.right-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.game-board {
+  border: 2px solid;
+}
+
+/* ===== 나의 bad piece guage ===== */
+#my-bad-piece-guage-container {
+  position: relative;
+  border: 3px solid;
+  width: 200px;
+}
+#my-bad-piece-guage-container .my-bad-piece-guage{
+  height: 10px;
+  transition: all .2s linear;
+  transform: scaleX(0);
+  transform-origin: top left;
+  background-color: #5672ff;
+}
+
+
+/* ===== missile ===== */
+.missile {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background-color: #ff9547;
+  border: 2px solid;
+  left: 50%;
+  /* top: 650px; */
+  margin-left: -120px;
+  z-index: 100;
+}
+
+
+/* ===== 디버그 패널 ===== */
+#debug-pannel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  width: 100;
+}

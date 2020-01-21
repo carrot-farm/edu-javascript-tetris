@@ -55,7 +55,6 @@ class Board {
     this.next.draw();
   }
 
-
   // ===== 블럭과 보드 그리그
   draw() {
     this.piece.draw();
@@ -89,8 +88,25 @@ class Board {
     return true;
   }
 
+  // ===== 방해 블럭 생성
+  createBadPiece() {
+    const voidNum = Math.floor(Math.random() * 10); // 방해 블럭 중 하나가 빠질 공간
+    const badPieces = _.go(_.range(10),
+      L.entries,
+      _.takeAll,
+      _.map(([idx, a]) => (idx == voidNum ? 0 : 8 ) ),
+      _.tap(_.log),
+    )
+    // _.log('> createBadPiece : ');
+
+    this.grid.shift();
+    this.grid.push(badPieces);
+    // _.log('> grid : ', this.grid);
+  }
+
   // ===== 꽉찬 줄 지우기
   clearLines() {
+
     let lines = 0; // 삭제한 라인의 수
 
     // # 전체 보드 순회
@@ -109,23 +125,40 @@ class Board {
     });
 
     // # 삭제된 라인이 있을 경우
-    if(lines > 0){
+    if(lines > 0) {
       // # 삭제된 라인이 있다면 점수 추가
       account.score += this.getLinesClearedPoints(lines);
       account.lines += lines; // 삭제 라인 추가
 
       // 삭제 라인 수가 다음 레벨에 도달 했을 경우.
       if(account.lines >= LINES_PER_LEVEL) {
-        console.log('> 스피드 레벨 업');
-        account.level++; // 레벨업
-
-        // # 라인 수 빼기
-        account.lines -= LINES_PER_LEVEL;
-
-        // # 스피드 업
-        time.level = LEVEL[account.level];
+        this.levelUp(); // 레벨 업
       }
+
+      // # socket
+      socket.emit('clearLines',{ myInfo, clearLines: lines });
     }
+  }
+
+  // ===== 레벨 업
+  levelUp() {
+    // console.log('> 스피드 레벨 업');
+    // account.level++; // 레벨업
+
+    // // # 라인 수 빼기
+    // account.lines -= LINES_PER_LEVEL;
+
+    // // # 스피드 업
+    // time.level = LEVEL[account.level];
+  }
+
+  // ===== changeSeppd
+  changeSpeed(speed) {
+    account.level = speed; // 레벨업
+
+    // # 스피드 업
+    time.level = LEVEL[account.level];
+    _.log('> changeSpeed', speed)
   }
 
   // ===== 라인 삭제 시 포인트
@@ -137,6 +170,7 @@ class Board {
       lines === 4 ? POINTS.TETRIS :
       0;
 
+    // return (account.level + 1) * lineClearPoints;
     return (account.level + 1) * lineClearPoints;
   }
 
@@ -151,7 +185,6 @@ class Board {
       })
     })
   }
-
 
   // ===== 0으로 채워진 2차원 배열 반환
   getEmptyBoard() {
