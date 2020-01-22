@@ -5,17 +5,17 @@ const ctxNext = canvasNext.getContext('2d');
 let requestId;
 time = {};
 
-// # 점수, 레벨, 삭제 라인 수 정보
+// ===== 점수, 레벨, 삭제 라인 수 정보
 let accoutValues = {
   score: 0, // 스코어
   level: 0, // ㅅ피드 레벨
   lines: 0, // 삭제 라인 수
 }
 
-// # board 인스턴스 생성
+// ===== board 인스턴스 생성
 let board  = new Board(ctx, ctxNext);
 
-// # Proxy를 이용해 account 값이 변경될때 마다 엘리먼트 값 변경
+// ===== Proxy를 이용해 account 값이 변경될때 마다 엘리먼트 값 변경
 let account = new Proxy(accoutValues, {
   set: (target, key, value) => {
     target[key] = value; // 값을 반영
@@ -24,7 +24,7 @@ let account = new Proxy(accoutValues, {
   }
 });
 
-// # 이벤트 키코드에 따른 좌표 변경.
+// ===== 이벤트 키코드에 따른 좌표 변경.
 let moves = {
   [KEY.SPACE]: p => ({ ...p, y: p.y + 1 }),
   [KEY.LEFT]: p => ({ ...p, x: p.x - 1 }),
@@ -101,7 +101,7 @@ function eventListener() {
       // # space 눌렀을 경우 출돌 전까지 계속 y 좌표 이동
       if(event.keyCode === KEY.SPACE) {
         while(board.valid(p)) {
-          account.score += POINTS.HARD_DROP; // 포인트 추가
+          // account.score += POINTS.HARD_DROP; // 포인트 추가
           board.piece.move(p);
           p = moves[KEY.DOWN](board.piece);
         }
@@ -113,9 +113,9 @@ function eventListener() {
         board.piece.move(p); // 블럭 좌표 변경
 
         // # 다운 시 스코어 추가
-        if (event.keyCode === KEY.DOWN) {
-          account.score += POINTS.SOFT_DROP;
-        }
+        // if (event.keyCode === KEY.DOWN) {
+        //   account.score += POINTS.SOFT_DROP;
+        // }
       }
 
       // # 애니메이션
@@ -124,7 +124,6 @@ function eventListener() {
   });
 }
 
-
 // ===== 애니메이션
 function animate(now = 0) {
   // # 지난 시간 업데이트
@@ -132,10 +131,19 @@ function animate(now = 0) {
 
   // # 지난시간이 현재 타입 레벨을 초과 했는지 확인.
   if(time.elapsed > time.level) {
-    // console.log('> animate : ', time.elapsed)
+    // console.log('> level over : ')
     time.start = now; // 현재 시간 재 측정
+
+    if(myInfo.state === 'gameOver' || myInfo.state === 'win'){
+      gameOver();
+      return;
+    }
+
     // 블럭 떨어 뜨리면서 false 리턴 시
     if (!board.drop()) {
+      if(myInfo.state === 'play') {
+        socket.emit('gameOver', {myInfo});
+      }
       gameOver();
       return;
     }
@@ -153,19 +161,23 @@ function animate(now = 0) {
 
 // ===== 게임 종료
 function gameOver() {
-  console.log('> gameOver : ', requestId);
+  console.log('> gameOver : ',requestId);
+
   // # 반복 호출 종료
   cancelAnimationFrame(requestId);
-
   // # 게임 오버 표시
   ctx.fillStyle = 'black';
   ctx.fillRect(1, 3, 8, 1.2);
   ctx.font = '1px Arial';
   ctx.fillStyle = 'red';
   ctx.fillText('GAME OVER', 1.8, 4);
-  // console.log('> gameOver done : ', requestId);
 }
 
+// ===== 초기화
+$(document).ready(() => {
+  // # 다음블럭 초기화
+  initNext();
 
-// # 다음블럭 초기화
-initNext();
+  const socket = initSocket() // 소켓 초기화
+});
+

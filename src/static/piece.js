@@ -17,7 +17,7 @@ class Piece {
   spawn() {
     // console.log('> ',typeId, this.color,this.shape)
     // # 랜덤 타입 결정
-    this.typeId = this.randomizeTetrominoType(COLORS.length - 1);
+    this.typeId = this.randomizeTetrominoType(SHAPES.length - 1);
 
     // # 모양
     this.shape = SHAPES[this.typeId];

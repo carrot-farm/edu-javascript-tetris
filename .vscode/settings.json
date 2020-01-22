@@ -2,5 +2,8 @@
   "git.ignoreLimitWarning": true,
   "eslint.autoFixOnSave": true,
   "editor.formatOnSave": false,
-  "javascript.format.enable": false
+  "javascript.format.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }

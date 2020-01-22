@@ -13,7 +13,8 @@ const COLORS = [
   'yellow',
   'green',
   'purple',
-  'red'
+  'red',
+  'grey',
 ];
 Object.freeze(COLORS);
 
@@ -81,6 +82,7 @@ Object.freeze(POINTS);
 
 // ===== 레벨별 블록 낙하 인터벌
 const LEVEL = {
+  // 0: 10000,
   0: 800,
   1: 720,
   2: 630,
