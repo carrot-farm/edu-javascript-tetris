@@ -147,6 +147,7 @@ const gi = (function() {
   // ===== 리턴 데이터
   return {
     getGameInfo,
+    updateGameInfo,
     addUser,
     removeUser,
     updateUser,

@@ -17,6 +17,8 @@
 
   <!-- page : 로그인  -->
   <div id="login-page" class="page hide align_center-center ">
+    <div id="fire-ball-container" class="fire-ball-container" style="position:absolute;top:0;left:0;">
+    </div>
     <form>
       <div class="input-container padding-bottom-4">
         <input type="text" name="name" class="input-name" maxlength="9" />
@@ -38,6 +40,9 @@
 
   <!-- page : play  -->
   <div id="play-page" class="page hide">
+    <!-- fire ball -->
+    <!-- <canvas id="fire-ball" class="fire-ball"></canvas> -->
+
     <!-- bg -->
     <div id="play-page-bg"></div>
 
@@ -87,8 +92,10 @@
   <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
   <script src="https://unpkg.com/fxjs/dist/fx.min.js" ></script>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="./js/utils/socket_utils.js"></script>
+
+  <script src="./js/utils/attack_utils.js"></script>
   <script src="./js/utils/tetris_utils.js"></script>
+  <script src="./js/utils/socket_utils.js"></script>
 
   <script src="./constants.js"></script>
   <script src="./board.js"></script>

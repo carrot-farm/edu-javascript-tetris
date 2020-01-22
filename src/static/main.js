@@ -179,5 +179,12 @@ $(document).ready(() => {
   initNext();
 
   const socket = initSocket() // 소켓 초기화
+
+  // attack({
+  //   from: {x: 500, y: 500},
+  //   to: {x: 0, y: 0 },
+  //   hit: 3
+  // });
+
 });
 

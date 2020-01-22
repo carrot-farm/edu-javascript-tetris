@@ -291,6 +291,11 @@ const initialize = () => {
   socket.emit('initialize');
 };
 
+// ===== 설정
+const cheatUpdateGameInfo = (_gameInfo = {}) => {
+  socket.emit('cheatUpdateGameInfo', _gameInfo);
+};
+
 
 // ===== 디버그 패널 이벤트 바인딩
 function degubEventListener(socket) {

@@ -26,6 +26,7 @@ socket.init = server => {
       eventListener(['clearLines', listen.clearLines]),
       eventListener(['gameOver', listen.gameOver]),
       eventListener(['initialize', listen.initialize]),
+      eventListener(['cheatUpdateGameInfo', listen.updateGameInfo]),
     )
   });
 
@@ -111,7 +112,14 @@ listen.gameOver = ({myInfo}, socket) => {
 listen.initialize = (data, socket) => {
   _.log('> initialize')
   gi.initialize();
-  updateEmitAll(data, socket, 'initialized');
+  updateEmitAll(gi.getGameInfo(), socket, 'initialized');
+}
+
+// ===== game info 변경
+listen.updateGameInfo = (data, socket) => {
+  _.log('> updateGameInfo');
+  gi.updateGameInfo(data)
+  updateEmitAll(gi.getGameInfo(), socket);
 }
 
 
