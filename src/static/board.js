@@ -181,6 +181,7 @@ class Board {
         if(value > 0) {
           this.ctx.fillStyle = COLORS[value];
           this.ctx.fillRect(x, y, 1, 1);
+
         }
       })
     })

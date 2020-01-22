@@ -72,6 +72,24 @@ button {
   flex-direction: column;
   align-items: center;
 }
+#play-page-bg {
+  background: url('/image/play_bg.jpg') no-repeat center center;
+  background-size: cover;
+  opacity: 0.1;
+  position: absolute;
+  left:0;
+  top:0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+#enemies-container,
+#my-info-container,
+#my-teams-container {
+  z-index:1;
+}
+
+/* 나의 정보 */
 
 /* 유저 정보 공통 */
 .user-info-container {
