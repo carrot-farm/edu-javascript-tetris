@@ -222,12 +222,14 @@ button {
 }
 #fire-ball-container .fire-ball-outer-right{
   z-index: 0;
+  width: 17px;
+  height: 17px;
   background-color: rgba(255, 255, 255, 0.5);
 }
 #fire-ball-container .fire-ball-inner-right{
   z-index: 1;
-  width: 15px;
-  height: 15px;
+  width: 10px;
+  height: 10px;
   background-color: rgba(255, 255, 255, 0.7);
 }
 #fire-ball-container .fire-ball-1{
@@ -272,6 +274,14 @@ button {
   z-index: 0;
   opacity: 0.3;
 }
+
+/* ===== 파티클 ===== */
+.fire-ball-dot {
+  background-color: #ff5b4b;
+  border-radius: 50%;
+  position: absolute;
+}
+
 
 
 /* ===== 디버그 패널 ===== */
