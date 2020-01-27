@@ -161,7 +161,7 @@ function animate(now = 0) {
 
 // ===== 게임 종료
 function gameOver() {
-  console.log('> gameOver : ',requestId);
+  // console.log('> gameOver : ',requestId);
 
   // # 반복 호출 종료
   cancelAnimationFrame(requestId);
@@ -180,11 +180,11 @@ $(document).ready(() => {
 
   const socket = initSocket() // 소켓 초기화
 
-  fireBall.attack({
-    from: {x: 500, y: 500},
-    to: {x: 0, y: 0 },
-    hit: 3
-  });
+  // fireBall.attack({
+  //   from: {x: 500, y: 500},
+  //   to: {x: 200, y: 200 },
+  //   hit: 5
+  // });
 
 });
 

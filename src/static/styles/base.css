@@ -280,6 +280,8 @@ button {
   background-color: #ff5b4b;
   border-radius: 50%;
   position: absolute;
+  width: inherit;
+  height: inherit;
 }
 
 

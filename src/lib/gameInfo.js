@@ -102,7 +102,7 @@ const gi = (function() {
     return {
       from: myInfo,
       to: randomEnemy,
-      crash: clearLines
+      hit: clearLines
     };
   };
 

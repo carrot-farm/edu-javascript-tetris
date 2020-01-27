@@ -16,10 +16,8 @@ const fireBall = ((window, gsap) => {
   // ===== 엘리먼트 여러개 생성
   const els = (f, count) => _.go(L.range(count),
     L.map(f),
-    _.takeAll,
-    _.tap(_.log),
+    // _.takeAll,
     _.reduce((acc, b) => acc += b),
-    _.tap(_.log),
     el
   )
 
@@ -53,75 +51,92 @@ const fireBall = ((window, gsap) => {
 
 
   // ===== 폭발
-  const explosion = () => {
+  const explosion = (to, callback) => {
     // return _.log(createParticles(3));
     _.go(L.range(20),
       _.each((i) => {
-        const size = rand(8, 20); // 파티클의 크기.(x, y)
+        const size = rand(3, 10); // 파티클의 크기.(x, y)
         const angle = Math.random() * Math.PI * 2; // 앵글
-        const length = Math.random() * (300 / 2 - size / 2); // 파티클 생성 범위
+        const length = Math.random() * (150 / 2 - size / 2); // 파티클 생성 범위
         const speed = 1;
         const gravity = 1;
-        const $particle = createParticle(1);
-        _.log('> angle : ', i, angle, length, $particle)
-        return;
+        const $particle = createParticle(1).children[0];
+        // _.log('> angle : ', i, angle, length, $particle)
+        // _.log('> angle : ', Math.cos(angle) * length)
 
         gsap.set($particle, {
           width: size,
           height: size,
-          x: Math.cos(angle) * length,
-          y: Math.sin(angle) * length,
-          // backgroundColor: '#ff9547',
-          // scale: ''
-          // x: Math.cos(angle) * length,
-          // y: Math.sin(angle) * length,
-          // xPercent: -50,
-          // yPercent: -50,
-          // force3D: true,
+          x: to.x,
+          y: to.y,
+          xPercent: -50,
+          yPercent: -50,
+          force3D: true,
         })
 
-        // let tween = gsap.to($particle, {
-        //   duration: 2,
-        //   opacity: 0,
-        //   physics2D: {
-        //     velocity: "random(200, 650)",
-        //     angle: "random(250, 290)",
-        //     gravity: 500
-        //   },
-        //   delay: "random(0, 2.5)"
-        // });
-
+        gsap.to($particle, {
+          duration: 0.5,
+          opacity: 0,
+          x: to.x + (Math.cos(angle) * length),
+          y: to.y + (Math.sin(angle) * length),
+          ease: "power4.out",
+          onComplete: () => {
+            if(i === 19) {
+              if(typeof callback === 'function') {
+                callback();
+              }
+            }
+          }
+        });
       }),
     )
   };
 
 
   // ===== 지정 좌표 공격
-  const attack = ({from, to, hit}) => {
+  const attackFireBall = ({from, to, delay}) => new Promise((resolve) => {
+
     // # 파이어볼 생성
     const fireBalls = createFireBall(0);
-
-    _.log('> fireBalls ', fireBalls.children);
+    // _.log('> fireBalls ', fireBalls.children);
 
     // # 지정좌표에서 날라가기
     gsap.fromTo(fireBalls.children,
       from,
       {
-        ...to,
+        x: to.x, y: to.y,
+        delay: delay * 0.3,
         duration: 1,
-        stagger: 0.02,
+        stagger: 0.01,
+        ease: 'power3.in',
         onComplete: () => {
-          // fireBalls.remove();
-          _.log('> onComplete : ');
-          explosion()
+          // _.log('> onComplete : ');
+          gsap.to(fireBalls.children,{
+            duration: 0.1,
+            opacity: 0,
+          })
+
+          // # 타겟 흔들림.
+          shake(to.el);
+
+          // # 지정좌표 도착시 파이어볼은 사라지고 폭발 파티클
+          explosion({x: to.x + 7, y: to.y + 7 }, () => {
+            resolve();
+          });
         }
-      },
+      }
     );
+  });
 
-    // # 지정좌표 도착시 파이어볼은 사라지고 폭발 파티클
 
-    // # 타겟 흔들림
-  };
+
+  // ===== 지정 좌표 공격
+  const attack = ({from, to, hit, shakeTargetEl}) => new Promise((resolve) => {
+    _.go(L.range(hit),
+      C.map( i => attackFireBall({from, to, delay: i})),
+      a => resolve(a)
+    )
+  });
 
 
   return {

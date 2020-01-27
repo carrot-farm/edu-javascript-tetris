@@ -95,7 +95,7 @@ render['enemies'] = ({updatedEnemies, oldEnemies}) => {
 
   // # 이전 적 정보가 없을 경우.
   if(!oldEnemies || !oldEnemies.length) {return;}
-    // _.log('> enemies  : ', updatedEnemies, oldEnemies)
+    _.log('> enemies  : ', updatedEnemies, oldEnemies)
 
   // # 공격 대상자가 있을 경우 공격
   _.go(updatedEnemies,
@@ -103,7 +103,8 @@ render['enemies'] = ({updatedEnemies, oldEnemies}) => {
     _.each(([i, a]) => {
       // # 게임오버를 당하지 않은 적 중 게이지 정보가 다른 사람을 표기한다.
       if( !a.gameOver && (a.badPieceGuage != oldEnemies[i].badPieceGuage)) {
-        shake(`.enemy-${a.sockeId}`);
+        // attackEnemy({targetId: `.enemy-${a.socketId}`});
+        // shake(`.enemy-${a.socketId}`);
       }
     })
   )
@@ -202,6 +203,7 @@ function changeMainText(text) {
 
 // ===== 업데이트 게임정보
 function updateGameInfo({ updatedGameInfo, socketId }, socket) {
+  // _.log('> updateGameInfo : \n', socketId, updatedGameInfo);
   const updatedMyInfo = updatedGameInfo.users[socketId];
   const oldMyInfo = {...myInfo};
   const oldGameInfo = {...gameInfo};
@@ -217,7 +219,7 @@ function updateGameInfo({ updatedGameInfo, socketId }, socket) {
     oldMyInfo,
   };
 
-  _.log('> updateGameInfo : \n', updatedGameInfo);
+  // _.log('> updateGameInfo : \n', updatedGameInfo);
   // # 페이지 전환
   if(oldMyInfo.state !== updatedMyInfo.state) {
     // _.log('> change page');
@@ -238,6 +240,11 @@ function updateGameInfo({ updatedGameInfo, socketId }, socket) {
 
     // # 공격
     if(updatedGameInfo.attack) {
+      // _.log("> attack : ", updatedGameInfo.attack)
+      // # 내가 공격시
+      if(updatedMyInfo.socketId === updatedGameInfo.attack.from.socketId) {
+        attackEnemy({ targetId: `.enemy-${updatedGameInfo.attack.to.socketId}`, hit: updatedGameInfo.attack.hit })
+      }
       delete updatedGameInfo.attack; // 삭제
     }
   }
@@ -247,7 +254,6 @@ function updateGameInfo({ updatedGameInfo, socketId }, socket) {
     board.changeSpeed(updatedGameInfo.level);
   }
 
-
   // # 최신 정보 업데이트
   gameInfo = {...gameInfo, ...updatedGameInfo};
   myInfo = {...myInfo, ...updatedMyInfo};
@@ -255,9 +261,24 @@ function updateGameInfo({ updatedGameInfo, socketId }, socket) {
 
 
 // ===== 적측 공격
-function attackenemy({ targetId , crash, oldEnemies,updatedEnemies }) {
-  // # 흔들기
-  shake(`.enemy-${targetId}`);
+function attackEnemy({ targetId , hit }) {
+  const $targetEl = document.querySelector(targetId);
+  const $boardEl = document.querySelector('#board');
+  const targetInfo = $targetEl.getBoundingClientRect();
+  const boardInfo = $boardEl.getBoundingClientRect();
+
+  // _.log('> attackEnemy : ', targetInfo);
+
+  // # 파이어볼
+  fireBall.attack({
+    from: {x: (boardInfo.x + boardInfo.width) / 2, y: boardInfo.y + boardInfo.height - 20},
+    to: {
+      x: targetInfo.x + (targetInfo.width / 2) - 7 ,
+      y: targetInfo.y + (targetInfo.height / 2),
+      el: $targetEl
+    },
+    hit: hit
+  });
 }
 
 
@@ -291,7 +312,7 @@ const initialize = () => {
   socket.emit('initialize');
 };
 
-// ===== 설정
+// ===== 클라이언트에서 설정
 const cheatUpdateGameInfo = (_gameInfo = {}) => {
   socket.emit('cheatUpdateGameInfo', _gameInfo);
 };

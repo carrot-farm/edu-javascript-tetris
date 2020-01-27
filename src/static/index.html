@@ -17,8 +17,7 @@
 
   <!-- page : 로그인  -->
   <div id="login-page" class="page hide align_center-center ">
-    <div id="fire-ball-container" class="fire-ball-container" style="position:absolute;top:0;left:0;">
-    </div>
+
     <form>
       <div class="input-container padding-bottom-4">
         <input type="text" name="name" class="input-name" maxlength="9" />
@@ -41,7 +40,7 @@
   <!-- page : play  -->
   <div id="play-page" class="page hide">
     <!-- fire ball -->
-    <!-- <canvas id="fire-ball" class="fire-ball"></canvas> -->
+    <div id="fire-ball-container" class="fire-ball-container" style="position:absolute;top:0;left:0;"></div>
 
     <!-- bg -->
     <div id="play-page-bg"></div>
@@ -90,6 +89,7 @@
   <!-- 스크립트 로드 -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
+  <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MotionPathPlugin.min.js"></script>
   <script src="https://unpkg.com/fxjs/dist/fx.min.js" ></script>
   <script src="/socket.io/socket.io.js"></script>
 
@@ -102,6 +102,7 @@
   <script src="./board.js"></script>
   <script src="./piece.js"></script>
   <script src="./main.js"></script>
+
 </body>
 
 </html>
