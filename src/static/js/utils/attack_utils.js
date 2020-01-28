@@ -55,11 +55,9 @@ const fireBall = ((window, gsap) => {
     // return _.log(createParticles(3));
     _.go(L.range(20),
       _.each((i) => {
-        const size = rand(3, 10); // 파티클의 크기.(x, y)
+        const size = rand(3, 15); // 파티클의 크기.(x, y)
         const angle = Math.random() * Math.PI * 2; // 앵글
-        const length = Math.random() * (150 / 2 - size / 2); // 파티클 생성 범위
-        const speed = 1;
-        const gravity = 1;
+        const length = Math.random() * (200 / 2 - size / 2); // 파티클 생성 범위
         const $particle = createParticle(1).children[0];
         // _.log('> angle : ', i, angle, length, $particle)
         // _.log('> angle : ', Math.cos(angle) * length)
@@ -75,7 +73,7 @@ const fireBall = ((window, gsap) => {
         })
 
         gsap.to($particle, {
-          duration: 0.5,
+          duration: 1,
           opacity: 0,
           x: to.x + (Math.cos(angle) * length),
           y: to.y + (Math.sin(angle) * length),
@@ -106,7 +104,7 @@ const fireBall = ((window, gsap) => {
       {
         x: to.x, y: to.y,
         delay: delay * 0.3,
-        duration: 1,
+        duration: 0.5,
         stagger: 0.01,
         ease: 'power3.in',
         onComplete: () => {

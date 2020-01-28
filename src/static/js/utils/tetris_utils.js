@@ -33,6 +33,7 @@ render['login'] = ({ updatedGameInfo, oldGameInfo, updatedMyInfo }, socket) => {
 // ===== 대기 페이지 렌더링
 render['progress'] = ({ updatedGameInfo, oldGameInfo, updatedMyInfo }) => {
   const $root = document.getElementById('progress-page');
+  // _.log('> progress : ', updatedGameInfo)
   // console.log('> render progress : ', $root.querySelector('.input-name'))
   $root.querySelector('.current-users').textContent = updatedGameInfo.totalUsers;
   $root.querySelector('.max-users').textContent = updatedGameInfo.maxUsers;
@@ -43,18 +44,15 @@ render['progress'] = ({ updatedGameInfo, oldGameInfo, updatedMyInfo }) => {
 // ===== play 페이지 랜더링
 render['play'] = ({ updatedGameInfo, oldGameInfo, updatedMyInfo, oldMyInfo }) => {
   const { state } = updatedGameInfo;
-  const $root = document.getElementById(`${state}-page`);
   const myTeamsNum = updatedMyInfo.team;
   const enemiesNum = myTeamsNum === 0 ? 1: 0;
   const oldEnemies = oldGameInfo && oldGameInfo.teams && oldGameInfo.teams[enemiesNum];
   const myTeams = updatedGameInfo.teams[myTeamsNum];
 
-  _.log('> play : ', updatedGameInfo);
+  _.log('> play : ', updatedMyInfo);
   // # speed up
 
 
-  // console.log('> play render : ', oldMyInfo.badPieceGuage, updatedMyInfo.badPieceGuage, );
-  // changePage(state);
   render['enemies']({
     updatedEnemies: updatedGameInfo.teams[enemiesNum],
     oldEnemies,
@@ -92,22 +90,6 @@ render['enemies'] = ({updatedEnemies, oldEnemies}) => {
         )
       ),
     );
-
-  // # 이전 적 정보가 없을 경우.
-  if(!oldEnemies || !oldEnemies.length) {return;}
-    _.log('> enemies  : ', updatedEnemies, oldEnemies)
-
-  // # 공격 대상자가 있을 경우 공격
-  _.go(updatedEnemies,
-    _.entries,
-    _.each(([i, a]) => {
-      // # 게임오버를 당하지 않은 적 중 게이지 정보가 다른 사람을 표기한다.
-      if( !a.gameOver && (a.badPieceGuage != oldEnemies[i].badPieceGuage)) {
-        // attackEnemy({targetId: `.enemy-${a.socketId}`});
-        // shake(`.enemy-${a.socketId}`);
-      }
-    })
-  )
 };
 
 // ===== my team 랜더링
@@ -116,13 +98,22 @@ render['myTeams'] = ({myTeams, socketId}) => {
   // console.log('> myTeams', myTeams, socketId);
   if(myTeams.length <= 1) {return '';}
 
-  const result = _.go(myTeams,
+  let result = _.go(myTeams,
     _.filter(a => a.socketId != socketId),
-    _.reduce( (acc, e) =>
-      (typeof acc === 'string' ? acc : usersInfoRender('myTeam', acc))
-        + usersInfoRender('myTeam', e)
+    _.reduce( (acc, e) => (
+        (typeof acc === 'string' ? acc : usersInfoRender('myTeam', acc))
+          + usersInfoRender('myTeam', e)
+      )
     ),
   );
+
+  // # 아군이 1명일 때
+  if(typeof result === 'object' && !result.length) {
+    // console.log('> one', result);
+    result = usersInfoRender('myTeam', result);
+  }
+
+  // console.log('> myTeams', result, typeof result);
   $root.innerHTML = result ? result : '';
 };
 
@@ -233,30 +224,60 @@ function updateGameInfo({ updatedGameInfo, socketId }, socket) {
   }
 
 
-  if(updatedMyInfo.state === 'play') {
+  if(updatedMyInfo.state === 'progress') {
+    render[updatedMyInfo.state](updateData, socket);
+  }else if(updatedMyInfo.state === 'play') {
     render.enemies({updatedEnemies, oldEnemies}); // 적 랜더링
-    render.myTeams({myTeams, socketId: updatedMyInfo.sockeId}); // 우리 팀 렌더링
+    render.myTeams({myTeams, socketId}); // 우리 팀 렌더링
     render.myInfo({updatedGameInfo, updatedMyInfo, oldMyInfo}); // 나의 정보 렌더링
 
     // # 공격
     if(updatedGameInfo.attack) {
       // _.log("> attack : ", updatedGameInfo.attack)
-      // # 내가 공격시
+      // # 공격시
       if(updatedMyInfo.socketId === updatedGameInfo.attack.from.socketId) {
         attackEnemy({ targetId: `.enemy-${updatedGameInfo.attack.to.socketId}`, hit: updatedGameInfo.attack.hit })
       }
+      // # 공격 받을 시
+      else if(updatedMyInfo.socketId === updatedGameInfo.attack.to.socketId) {
+        attackMe({ enemyId: `.enemy-${updatedGameInfo.attack.from.socketId}`, hit: updatedGameInfo.attack.hit })
+      }
       delete updatedGameInfo.attack; // 삭제
+    }
+
+    // # 게임 스피드 변경.
+    if(updatedGameInfo.level !== oldGameInfo.level) {
+      board.changeSpeed(updatedGameInfo.level);
     }
   }
 
-  // # 게임 스피드 변경.
-  if(updatedGameInfo.level !== oldGameInfo.level) {
-    board.changeSpeed(updatedGameInfo.level);
-  }
 
   // # 최신 정보 업데이트
   gameInfo = {...gameInfo, ...updatedGameInfo};
   myInfo = {...myInfo, ...updatedMyInfo};
+}
+
+
+// ===== 적이 나를 공경
+function attackMe({ enemyId, hit }) {
+  const $enemyEl = document.querySelector(enemyId);
+  const $boardEl = document.querySelector('#my-info-detail');
+  const enemyInfo = $enemyEl.getBoundingClientRect();
+  const boardInfo = $boardEl.getBoundingClientRect();
+
+  // # 파이어볼
+  fireBall.attack({
+    from: {
+      x: enemyInfo.x + (enemyInfo.width / 2) - 7 ,
+      y: enemyInfo.y + (enemyInfo.height / 2),
+    },
+    to: {
+      x: (window.innerWidth / 2) + 140,
+      y: boardInfo.y + 190,
+      el: $boardEl
+    },
+    hit: hit
+  });
 }
 
 
@@ -271,7 +292,9 @@ function attackEnemy({ targetId , hit }) {
 
   // # 파이어볼
   fireBall.attack({
-    from: {x: (boardInfo.x + boardInfo.width) / 2, y: boardInfo.y + boardInfo.height - 20},
+    from: {
+      x: (window.innerWidth / 2) - 100,
+      y: boardInfo.y + boardInfo.height - 20},
     to: {
       x: targetInfo.x + (targetInfo.width / 2) - 7 ,
       y: targetInfo.y + (targetInfo.height / 2),

@@ -1,8 +1,8 @@
 const gameInfoModel = {
   gameState: 'ready',
   totalUsers: 0,
-  maxUsers: 2,
-  level: 2,
+  maxUsers: 4,
+  level: 0,
   teams: {
     0: [],
     1: []

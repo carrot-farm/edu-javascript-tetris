@@ -1,5 +1,5 @@
 const userInfoModel = { // 유저 모델
-  id: '',
+  // id: '',
   socketId :'',
   state: 'ready', // ready, login, progress, play, win, loser
   name: '',

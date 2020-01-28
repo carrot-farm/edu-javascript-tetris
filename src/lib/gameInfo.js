@@ -54,9 +54,10 @@ const gi = (function() {
   // ===== 로그인
   const loginUser = ({name, socketId, socket}) => {
     gameInfo.totalUsers  = gameInfo.totalUsers < 0 ? 0: gameInfo.totalUsers;
-    const team = gameInfo.totalUsers % 2;
-    const userInfo = gameInfo.users[socketId];
+    const team = gameInfo.totalUsers % 2; // 팀정함
+    const userInfo = gameInfo.users[socketId]; // 유저 정보 참조
 
+    // # 팀 / 이름 반영
     userInfo.team = team;
     userInfo.name = name;
     // _.log('> loginUser : ', gameInfo.totalUsers, team)
@@ -77,8 +78,10 @@ const gi = (function() {
         _.each(([k, v]) => {
           v.state = 'play';
         }),
-        _.map(([k, v]) => ({ [k]: v }))
+        // _.map(([k, v]) => ({ [k]: v }))
       );
+      // _.log('> full : ', users);
+      // _.log('> full2 : ', gameInfo);
     }
   };
 
